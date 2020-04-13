@@ -9,7 +9,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
     }
 
     update() {
-        let speed = 2;
+        let speed = 5;
         //move left/right
         if(!this.isFiring) {
             if(keyLEFT.isDown && this.x >= 47) {
@@ -39,8 +39,13 @@ class Rocket extends Phaser.GameObjects.Sprite {
         }
         //reset when miss
         if(this.y <= 108) {
-            this.isFiring = false;
-            this.y = 431;
+            this.reset();
         }
+    }
+
+    //reset player position back to start
+    reset() {
+        this.isFiring = false;
+        this.y = 431;
     }
 }
