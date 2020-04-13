@@ -1,4 +1,5 @@
 console.log("hello world");
+console.log("testing");
 
 let config = {
     type: Phaser.CANVAS,
