@@ -3,12 +3,26 @@ class Play extends Phaser.Scene {
         super("playScene");
     }
 
+    preload() {
+        // load images/tile sprites
+        this.load.image('rocket', './assets/player.png');
+        this.load.image('spaceship', './assets/spaceship.png');
+        this.load.image('starfield', './assets/starfield.png');
+        this.load.image('boss', './assets/boss.png');
+        // load spritesheet
+        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+    }
+
     create() {
         // place tile sprite
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        this.starfield = this.add.tileSprite(0, 0, 1040, 680, 'starfield').setScale(1, 1).setOrigin(0, 0);
 
         // add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setScale(0.5, 0.5).setOrigin(0, 0);
+        this.p1Rocket = new Rocket(this, game.config.width - 100, game.config.height/2, 'rocket').setScale(1, 1).setOrigin(0, 0);
+
+        this.bossB = new Boss(this, 0, game.config.height/2 - 50, 'boss').setScale(1, 1).setOrigin(0,0);
+
+
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -76,25 +90,33 @@ class Play extends Phaser.Scene {
                 this.gameOver = true;
             }
         }, callbackScope: this, loop: true });
+        game.canvas.addEventListener('mousedown', function () {
+            game.input.mouse.requestPointerLock();
+        });
 
+        this.slow = 1;
         //  Input events
         this.input.on('pointermove', function (pointer) {
-            //  Keep the paddle within the game
-            this.p1Rocket.x = Phaser.Math.Clamp(pointer.x, 20, 620);
-            this.p1Rocket.y = Phaser.Math.Clamp(pointer.y, 20, 460);
+            if (this.input.mouse.locked) {
+                
+                this.p1Rocket.x += pointer.movementX/this.slow;
+                this.p1Rocket.y += pointer.movementY/this.slow;
+                //  Keep the rocket within the game
+                this.p1Rocket.x  = Phaser.Math.Clamp(this.p1Rocket.x , 0, 1000);
+                this.p1Rocket.y  = Phaser.Math.Clamp(this.p1Rocket.y , 40, 640);
+            }
         }, this);
     }
 
-    preload() {
-        // load images/tile sprites
-        this.load.image('rocket', './assets/rocket.png');
-        this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
-        // load spritesheet
-        this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-    }
-
     update() {
+        let pointer = this.input.activePointer;
+        if(pointer.isDown) {
+            this.slow = 10;
+        }
+        else {
+            this.slow = 3;
+        }
+
         this.timeRight.text = this.timer;
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyF)) {
@@ -104,6 +126,7 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 8;
         if (!this.gameOver) {               
             this.p1Rocket.update();         // update rocket sprite
+            this.bossB.update();
             this.ship01.update();           // update spaceships (x3)
             this.ship02.update();
             this.ship03.update();
