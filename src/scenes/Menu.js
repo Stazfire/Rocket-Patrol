@@ -30,6 +30,7 @@ class Menu extends Phaser.Scene {
         let centerY = game.config.width/2;
         let textSpacer = 64;
 
+        
         this.add.text(centerX, centerY- textSpacer, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
         this.add.text(centerX, centerY, 'Use <- -> arrows to move & (F) to fire', menuConfig).setOrigin(0.5)
         menuConfig.backgroundColor = '#00FF00';
@@ -39,12 +40,13 @@ class Menu extends Phaser.Scene {
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        //this.scene.start("playScene");
+
     }
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
           // easy mode
+          game.scale.startFullscreen();
           game.settings = {
             spaceshipSpeed: 3,
             gameTimer: 60000    

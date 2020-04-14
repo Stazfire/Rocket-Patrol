@@ -3,8 +3,12 @@ console.log("testing123");
 
 let config = {
     type: Phaser.AUTO,
-    width: 640,
-    height: 480,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 640,
+        height: 480,
+    },
     scene: [ Menu, Play ]
 }
 

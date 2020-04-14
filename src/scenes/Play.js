@@ -6,13 +6,6 @@ class Play extends Phaser.Scene {
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
-        // white rectangle borders
-        this.add.rectangle(5, 5, 630, 32, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(5, 443, 630, 32, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(5, 5, 32, 455, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(603, 5, 32, 455, 0xFFFFFF).setOrigin(0, 0);
-        // green UI background
-        this.add.rectangle(37, 42, 566, 64, 0x00FF00).setOrigin(0, 0);
 
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setScale(0.5, 0.5).setOrigin(0, 0);
@@ -32,7 +25,7 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
-            frameRate: 30
+            frameRate: 60
         });
 
         // score
@@ -83,6 +76,13 @@ class Play extends Phaser.Scene {
                 this.gameOver = true;
             }
         }, callbackScope: this, loop: true });
+
+        //  Input events
+        this.input.on('pointermove', function (pointer) {
+            //  Keep the paddle within the game
+            this.p1Rocket.x = Phaser.Math.Clamp(pointer.x, 20, 620);
+            this.p1Rocket.y = Phaser.Math.Clamp(pointer.y, 20, 460);
+        }, this);
     }
 
     preload() {
